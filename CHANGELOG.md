@@ -11,7 +11,7 @@ Performance:
   - Saves one syscall per server per multi-server `get_multi`; on 4 servers a 3-key `get_multi` goes from 16% to 5% slower than 2.7.11 in the #930 benchmark
   - TLS sockets also check `SSLSocket#pending`, since `IO.select` cannot see data OpenSSL has buffered
   - Thanks to Julian Richard Contreras for this contribution
-- Only drain servers that were sent quiet requests when a `quiet`/`multi` block ends (#PR_NUMBER)
+- Only drain servers that were sent quiet requests when a `quiet`/`multi` block ends (#1167)
   - Ending the block used to send a noop to every server in the ring and wait for each reply, one after another, so its cost grew with ring size even when the block touched one server (or none)
   - Each connection now records when a quiet request is written, and the block's drain skips the others; servers that were never connected are no longer connected just to be drained
   - With ~300us of network round trip, `multi { set }` on a 16-server ring goes from 4.9ms to 0.32ms; an empty block no longer touches the network
